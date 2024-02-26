@@ -1,7 +1,13 @@
 import uuid
 import os
+import datetime
 import imageio.v3 as iio
 from shutil import copyfile
+
+def get_datetime_string():
+  """Returns current date and time in YYYY-MM-DD HH:MM:SS format"""
+  now = datetime.datetime.now()
+  return now.strftime("%Y-%m-%d.%H-%M-%S")
 
 def convert_files(src_dir: str, dst_dir: str = "", format: str = "", delete_source: bool = False):
   """Convert filenames of every images to uuid format.
@@ -27,7 +33,7 @@ def convert_files(src_dir: str, dst_dir: str = "", format: str = "", delete_sour
     dest_ext = "." + format if format else source_ext
 
     src = src_dir + "\\" + filename
-    dst = dst_dir + "\\" + str(uuid.uuid4()) + dest_ext
+    dst = dst_dir + "\\" + str(uuid.uuid4()) + "." + get_datetime_string() + dest_ext
 
     if not os.path.isfile(src):
       continue
