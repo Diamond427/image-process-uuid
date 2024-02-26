@@ -4,23 +4,27 @@ import datetime
 import imageio.v3 as iio
 from shutil import copyfile
 
-def get_datetime_string():
-  """Returns current date and time in YYYY-MM-DD HH:MM:SS format"""
-  now = datetime.datetime.now()
-  return now.strftime("%Y-%m-%d.%H-%M-%S")
-
-def convert_files(src_dir: str, dst_dir: str = "", format: str = "", delete_source: bool = False):
+def convert_files(src_dir: str, dst_dir: str = "", image_format: str = "", out_fname_format: str = "%d_%u", delete_source: bool = False):
   """Convert filenames of every images to uuid format.
   
-  Function Arguments:
+  ### Function Arguments:
    - src_dir: absolute path of source directory
    - dst_dir `optional`: absolute path of destination directory; default = `src_dir`
-   - format `optional`: format of output image; defaults to save original format
+   - image_format `optional`: format of output image; defaults to save original format
+   - out_fname_format `optional`: template string for output image filename; defaults to `%d_%u`; `%u`: `uuid_v4`; `%d`: `timestamp`
    - delete_source `optional`: delete source images; defaults to `False`
 
-  Sample Usage:
-  convert_files("C:/Users/Admin/Pictures/sample", "jpg")
-  convert_files("C:/Users/Admin/Pictures/sample")
+  ### Sample Usage:
+
+  ```
+  convert_files(
+    src_dir="C:/Users/Admin/Pictures/sample",
+    dst_dir="c:/users/admin/pictures/normalized",
+    image_format="png",
+    out_fname_format="thermal_%d_%u",
+    delete_source=False
+  )
+  ```
   """
   if not dst_dir:
     dst_dir = src_dir
@@ -29,16 +33,17 @@ def convert_files(src_dir: str, dst_dir: str = "", format: str = "", delete_sour
     os.mkdir(dst_dir)
 
   for filename in os.listdir(src_dir):
-    _, source_ext = os.path.splitext(filename)
-    dest_ext = "." + format if format else source_ext
+    _, src_ext = os.path.splitext(filename)
+    dst_ext = "." + image_format if image_format else src_ext
 
     src = src_dir + "\\" + filename
-    dst = dst_dir + "\\" + str(uuid.uuid4()) + "." + get_datetime_string() + dest_ext
+    dst_filename = out_fname_format.replace("%u", str(uuid.uuid4())).replace("%d", str(datetime.datetime.now().timestamp()))
+    dst = dst_dir + "\\" + dst_filename + dst_ext
 
     if not os.path.isfile(src):
       continue
     
-    if format:
+    if image_format:
       img = iio.imread(src)
       iio.imwrite(dst, img)
       if delete_source:
