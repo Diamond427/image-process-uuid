@@ -29,13 +29,13 @@ def convert_files(src_dir: str, dst_dir: str = "", image_format: str = "", out_f
   ```
   """
   if not src_dir or not os.path.exists(src_dir) or not os.path.isdir(src_dir):
-    return Logger.error(f"Cannot read {src_dir}")
+    return logger.error(f"Cannot read {src_dir}")
   
   if not dst_dir:
     dst_dir = src_dir
   
   if not os.path.exists(dst_dir):
-    Logger.info(f"Directory {dst_dir} created.")
+    logger.info(f"Directory {dst_dir} created.")
     os.mkdir(dst_dir)
   
   tot_filecnt, success_cnt, skipped_cnt = 0, 0, 0
