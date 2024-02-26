@@ -16,7 +16,7 @@ def convert_files(src_dir: str, dst_dir: str = "", image_format: str = "", out_f
 
   ### Sample Usage:
 
-  ```
+  ```python
   convert_files(
     src_dir="C:/Users/Admin/Pictures/sample",
     dst_dir="c:/users/admin/pictures/normalized",
